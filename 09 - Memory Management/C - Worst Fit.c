@@ -1,44 +1,64 @@
 #include <stdio.h>
-void main()
-{
-    int i, j, nblocks, nfiles, temp, top = 0;
-    int frag[10], blocks[10], files[10];
-    static int block_arr[10], file_arr[10];
-    printf("\nEnter the total number of blocks:");
-    scanf("%d", &nblocks);
-    printf("\nEnter the total number of Processes:");
-    scanf("%d", &nfiles);
-    printf("\nEnter the size of blocks:\n");
-    for (i = 0; i < nblocks; i++)
-        scanf("%d", &blocks[i]);
-    printf("\nEnter the size of files:\n");
-    for (i = 0; i < nfiles; i++)
-        scanf("%d", &files[i]);
-    for (i = 0; i < nfiles; i++)
-    {
-        for (j = 0; j < nblocks; j++)
-        {
-            if (block_arr[j] != 1)
-            {
-                temp = blocks[j] - files[i];
-                if (temp >= 0)
-                {
-                    if (top < temp)
-                    {
-                        file_arr[i] = j;
-                        top = temp;
-                    }
+
+#define MAX_BLOCKS 10
+#define MAX_FILES 10
+
+typedef struct {
+    int id;
+    int size;
+    int allocated;
+} MemoryBlock;
+
+void worstFit(MemoryBlock blocks[], int numBlocks, int files[], int numFiles) {
+    int i, j;
+    int worstIndex;
+    
+    for (i = 0; i < numFiles; i++) {
+        worstIndex = -1;
+        
+        for (j = 0; j < numBlocks; j++) {
+            if (!blocks[j].allocated && blocks[j].size >= files[i]) {
+                if (worstIndex == -1 || blocks[j].size > blocks[worstIndex].size) {
+                    worstIndex = j;
                 }
             }
-            frag[i] = top;
-            block_arr[file_arr[i]] = 1;
-            top = 0;
+        }
+        
+        if (worstIndex != -1) {
+            blocks[worstIndex].allocated = 1;
+            printf("Process %d allocated to block %d\n", i, blocks[worstIndex].id);
+        } else {
+            printf("No block available to allocate process %d\n", i);
         }
     }
-    printf("\nProcess No.\tProcess Size\tBlock number\tBlock size\tFragment ");
-    for (i = 0; i < nfiles; i++)
-    {
-        printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d", i, files[i], file_arr[i], blocks[file_arr[i]], frag[i]);
+}
+
+int main() {
+    MemoryBlock blocks[MAX_BLOCKS];
+    int numBlocks, numFiles;
+    int files[MAX_FILES];
+    int i;
+
+    printf("Enter the number of memory blocks: ");
+    scanf("%d", &numBlocks);
+
+    for (i = 0; i < numBlocks; i++) {
+        blocks[i].id = i + 1;
+        printf("Enter the size of block %d: ", blocks[i].id);
+        scanf("%d", &blocks[i].size);
+        blocks[i].allocated = 0;
     }
-    printf("\n");
+
+    printf("Enter the total number of processes: ");
+    scanf("%d", &numFiles);
+
+    printf("Enter the size of each process:\n");
+    for (i = 0; i < numFiles; i++) {
+        printf("Process %d: ", i);
+        scanf("%d", &files[i]);
+    }
+
+    worstFit(blocks, numBlocks, files, numFiles);
+
+    return 0;
 }
