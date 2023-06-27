@@ -66,7 +66,8 @@ void main() {
         }
     }
 
-    avgs = seek / (n - 2);
+    //avgs = seek / (n - 2);
+    avgs = seek / (n - 3);
 
     printf("\n\nTotal Seek time\t\t: %.2f", seek);
     printf("\nAverage seek time\t: %.2f\n\n", avgs);
