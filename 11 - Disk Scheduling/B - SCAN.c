@@ -46,14 +46,16 @@ int main() {
             tot = ioq[i] - ioq[scan + 1];
         if (tot < 0)
             tot = tot * -1;
-        printf("%d\t%d\n", ioq[i], tot);
+        //printf("%d\t%d\n", ioq[i], tot);
+        printf("%d--> ", ioq[i];
     }
 
     for (i = scan + 1; i < n; i++) {
         tot = ioq[i + 1] - ioq[i];
         if (tot < 0)
             tot = tot * -1;
-        printf("%d\t%d\n", ioq[i], tot);
+        //printf("%d\t%d\n", ioq[i], tot);
+        printf("%d--> ", ioq[i];
     }
 
     seek = ioq[scan] + ioq[n - 1];
