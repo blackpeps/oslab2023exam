@@ -1,57 +1,100 @@
 #include <stdio.h>
-#define MAX 50
+#include <stdlib.h>
+#define MAX 20
+
+struct process
+{
+    int pid, at, bt, ct, ta, wt, rt;
+};
+
+void swap(struct process *a, struct process *b)
+{
+    struct process temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sort_at(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].at > arr[j + 1].at)
+                swap(&arr[j], &arr[j + 1]);
+}
+
+void sort_pid(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].pid > arr[j + 1].pid)
+                swap(&arr[j], &arr[j + 1]);
+}
+
 int main()
 {
-    int n, i, j, time = 0, completed = 0, shortest_job;
-    float total_wait_time = 0, total_turnaround_time = 0;
-    int arrival_time[MAX], burst_time[MAX], completion_time[MAX];
-    int remaining_time[MAX], process_id[MAX];
-    printf("Enter the number of processes: ");
-    scanf("%d", &n);
-    printf("Enter arrival time and burst time for\n");
-    for (i = 0; i < n; i++)
-    {
-        printf("Process %d: ", i + 1);
-        scanf("%d%d", &arrival_time[i], &burst_time[i]);
+    int pid;
+    float avwt = 0, avta = 0;
 
-        process_id[i] = i + 1;
-        remaining_time[i] = burst_time[i];
+    do
+    {
+        printf("Enter the number of processes (up to %d): ", MAX);
+        scanf("%d", &pid);
+    } while (pid <= 0 || pid > MAX);
+
+    struct process srtf[pid];
+
+    printf("Enter process details:\n");
+    for (int i = 0; i < pid; i++)
+    {
+        printf("\nProcessID: %d\n", i + 1);
+        srtf[i].pid = i + 1;
+
+        printf("Arrival Time: ");
+        scanf("%d", &srtf[i].at);
+
+        printf("Burst Time: ");
+        scanf("%d", &srtf[i].bt);
+
+        srtf[i].rt = srtf[i].bt;
     }
-    while (completed != n)
+
+    sort_at(srtf, pid);
+
+    int time = 0, completed = 0, short_job;
+
+    while (completed != pid)
     {
-        shortest_job = -1;
+        short_job = -1;
+        for (int i = 0; i < pid; i++)
+            if (srtf[i].at <= time && srtf[i].rt > 0)
+                if (short_job == -1 || srtf[i].rt < srtf[short_job].rt)
+                    short_job = i;
 
-        for (i = 0; i < n; i++)
+        if (short_job != -1)
         {
-            if (arrival_time[i] <= time && remaining_time[i] > 0)
+            srtf[short_job].rt--;
+            if (srtf[short_job].rt == 0)
             {
-                if (shortest_job == -1 || remaining_time[i] < remaining_time[shortest_job])
-                {
-                    shortest_job = i;
-                }
-            }
-        }
-        if (shortest_job != -1)
-        {
-            remaining_time[shortest_job]--;
-            if (remaining_time[shortest_job] == 0)
-            {
-                completion_time[shortest_job] = time + 1;
+                srtf[short_job].ct = time + 1;
                 completed++;
-                total_wait_time += completion_time[shortest_job] - arrival_time[shortest_job] - burst_time[shortest_job];
-                total_turnaround_time += completion_time[shortest_job] - arrival_time[shortest_job];
+                srtf[short_job].ta = srtf[short_job].ct - srtf[short_job].at;
+                srtf[short_job].wt = srtf[short_job].ta - srtf[short_job].bt;
+                avta += srtf[short_job].ta;
+                avwt += srtf[short_job].wt;
             }
         }
-
         time++;
     }
-    printf("PID\tArrival\tBurst\tCompletion\tTurnAround\tWaiting\n");
-    for (i = 0; i < n; i++)
-    {
-        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\n", process_id[i], arrival_time[i], burst_time[i], completion_time[i], completion_time[i] - arrival_time[i], completion_time[i] - arrival_time[i] - burst_time[i]);
-    }
-    printf("Average Turnaround Time: %f\n", total_turnaround_time / n);
-    printf("Average Wait Time: %f\n", total_wait_time / n);
+
+    sort_pid(srtf, pid);
+
+    printf("\nProcess Table:\n");
+    printf("PID\tAT\tBT\tCT\tTA\tWT\n");
+    for (int i = 0; i < pid; i++)
+        printf("%d\t%d\t%d\t%d\t%d\t%d\n", srtf[i].pid, srtf[i].at, srtf[i].bt, srtf[i].ct, srtf[i].ta, srtf[i].wt);
+
+    printf("\nAverage Waiting Time: %.2f\n", avwt / pid);
+    printf("Average Turnaround Time: %.2f\n", avta / pid);
 
     return 0;
 }
