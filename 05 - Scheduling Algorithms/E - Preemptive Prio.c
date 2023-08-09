@@ -1,85 +1,109 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX_PROCESS 10
-struct Process
+#define MAX 20
+
+struct process
 {
-    int pid;
-    int burst_time;
-    int arrival_time;
-    int completion_time;
-    int remaining_time;
-    int priority;
+    int pid, at, bt, prio, ct, ta, wt, rt;
 };
-typedef struct Process Process;
-void sort(Process processes[], int n)
+
+void swap(struct process *a, struct process *b)
 {
-    int i, j;
-    Process temp;
-    for (i = 0; i < n - 1; i++)
-    {
-        for (j = i + 1; j < n; j++)
-        {
-            if (processes[j].priority < processes[i].priority)
-            {
-                temp = processes[i];
-                processes[i] = processes[j];
-                processes[j] = temp;
-            }
-        }
-    }
+    struct process temp = *a;
+    *a = *b;
+    *b = temp;
 }
+
+void sort_prio(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].prio > arr[j + 1].prio)
+                swap(&arr[j], &arr[j + 1]);
+}
+
+void sort_pid(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].pid > arr[j + 1].pid)
+                swap(&arr[j], &arr[j + 1]);
+}
+
 int main()
 {
-    int n, t = 0, completed = 0, i, j, max_priority;
-    float total_waiting_time = 0.0, total_turnaround_time = 0.0, avg_waiting_time, avg_turnaround_time;
-    Process processes[MAX_PROCESS];
-    printf("Enter the number of processes: ");
-    scanf("%d", &n);
-    printf("Enter the burst time, arrival time and priority for process\n");
-    for (i = 0; i < n; i++)
+    int pid;
+    float avta = 0, avwt = 0;
+
+    do
     {
-        printf("Process %d: ", i + 1);
-        scanf("%d %d %d", &processes[i].burst_time, &processes[i].arrival_time, &processes[i].priority);
-        processes[i].remaining_time = processes[i].burst_time;
-        processes[i].pid = i + 1;
+        printf("Enter process upto %d: ", MAX);
+        scanf("%d", &pid);
+    } while (pid <= 0 || pid > MAX);
+
+    struct process pprio[pid]; // pprio stands for preemptive priority
+
+    printf("Enter Process Details: ");
+    for (int i = 0; i < pid; i++)
+    {
+        printf("\nProcess ID: %d", i + 1);
+        pprio[i].pid = i + 1;
+
+        printf("\nArrival Time: ");
+        scanf("%d", &pprio[i].at);
+
+        printf("Burst Time: ");
+        scanf("%d", &pprio[i].bt);
+
+        printf("Priority: ");
+        scanf("%d", &pprio[i].prio);
+
+        pprio[i].rt = pprio[i].bt;
     }
-    sort(processes, n);
-    while (completed != n)
+
+    sort_prio(pprio, pid);
+
+    int i = 0, j, completed = 0, max_prio, time = 0;
+
+    while (completed != pid)
     {
-        max_priority = 10000;
-        int max_remaining_time = -1;
-        for (i = 0; i < n; i++)
-        {
-            if (processes[i].arrival_time <= t && processes[i].remaining_time > 0 && processes[i].priority < max_priority)
+        max_prio = 10000;
+        int max_rt = -1;
+
+        for (i = 0; i < pid; i++)
+            if (pprio[i].at <= time && pprio[i].rt > 0 && pprio[i].prio < max_prio)
             {
-                max_priority = processes[i].priority;
-                max_remaining_time = processes[i].remaining_time;
+                max_prio = pprio[i].prio;
+                max_rt = pprio[i].rt;
                 j = i;
             }
-        }
-        if (max_remaining_time == -1)
+        if (max_rt == -1)
         {
-            t++;
+            time++;
             continue;
         }
-        processes[j].remaining_time--;
-        if (processes[j].remaining_time == 0)
+        pprio[j].rt--;
+        if (pprio[j].rt == 0)
         {
-            processes[j].completion_time = t + 1;
+            pprio[j].ct = time + 1;
             completed++;
-            total_waiting_time += processes[j].completion_time - processes[j].burst_time - processes[j].arrival_time;
-            total_turnaround_time += processes[j].completion_time - processes[j].arrival_time;
+            pprio[j].ta = pprio[j].ct - pprio[j].at;
+            pprio[j].wt = pprio[j].ta - pprio[j].bt;
+            avta += pprio[j].ta;
+            avwt += pprio[j].wt;
         }
-        t++;
+        time++;
     }
-    avg_waiting_time = total_waiting_time / n;
-    avg_turnaround_time = total_turnaround_time / n;
-    printf("\nPID\tPriority\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-    for (i = 0; i < n; i++)
-    {
-        printf("%d\t%d\t\t%d\t%d\t%d\t\t%d\t%d\n", processes[i].pid, processes[i].priority, processes[i].arrival_time, processes[i].burst_time, processes[i].completion_time, processes[i].completion_time - processes[i].burst_time - processes[i].arrival_time, processes[i].completion_time - processes[i].arrival_time);
-    }
-    printf("Average waiting time: %.2f\n", avg_waiting_time);
-    printf("Average turnaround time: %.2f\n", avg_turnaround_time);
+
+    sort_pid(pprio, pid);
+
+    printf("\nProcess Table:\n");
+    printf("PID\tAT\tBT\tPrio\tCT\tTA\tWT\n");
+    for (int i = 0; i < pid; i++)
+        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n", pprio[i].pid, pprio[i].at, pprio[i].bt, pprio[i].prio, pprio[i].ct, pprio[i].ta, pprio[i].wt);
+
+    printf("\nAverage Waiting Time: %.2f\n", avwt / pid);
+    printf("Average Turnaround Time: %.2f\n", avta / pid);
+
     return 0;
 }
