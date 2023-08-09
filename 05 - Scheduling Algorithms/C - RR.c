@@ -1,119 +1,133 @@
 #include <stdio.h>
-int i, j, k, n, tq, tct, rear, f = 0;
-float atat, awt;
+#define MAX 20
+
 struct process
 {
-    int pid, at, bt, rt, ct, tat, wt;
+    int pid, at, bt, ct, ta, wt, rt;
 };
-struct process p[20], temp, q[100];
-void main()
+
+void swap(struct process *a, struct process *b)
 {
-    printf("Enter the no. of processes : ");
-    scanf("%d", &n);
-    printf("Enter the time quantum : ");
+    struct process temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sort_at(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].at > arr[j + 1].at)
+                swap(&arr[j], &arr[j + 1]);
+}
+
+void sort_pid(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].pid > arr[j + 1].pid)
+                swap(&arr[j], &arr[j + 1]);
+}
+
+int main()
+{
+    int i, j, k, pid, tq, tct, rear, flag = 0;
+    float avwt = 0, avta = 0;
+
+    do
+    {
+        printf("Enter process upto %d:", MAX);
+        scanf("%d", &pid);
+    } while (pid <= 0 || pid > MAX);
+
+    printf("Enter time quantum: ");
     scanf("%d", &tq);
-    for (i = 0; i < n; i++)
+
+    struct process rr[pid], temp, q[100];
+
+    printf("Enter process details: ");
+    for (int i = 0; i < pid; i++)
     {
-        printf("\nprocess %d \n", i + 1);
-        printf("Enter the arrival time : ");
-        scanf("%d", &p[i].at);
-        printf("Enter the burst time : ");
-        scanf("%d", &p[i].bt);
-        p[i].rt = p[i].bt;
-        p[i].pid = i + 1;
+        printf("\nProcess ID: %d", i + 1);
+        rr[i].pid = i + 1;
+
+        printf("\nArrival Time: ");
+        scanf("%d", &rr[i].at);
+
+        printf("Burst Time: ");
+        scanf("%d", &rr[i].bt);
+
+        rr[i].rt = rr[i].bt;
     }
-    for (i = 0; i < n; i++)
-    {
-        for (j = i + 1; j < n; j++)
-        {
-            if (p[i].at > p[j].at)
-            {
-                temp = p[i];
-                p[i] = p[j];
-                p[j] = temp;
-            }
-        }
-    }
-    tct = p[0].at;
+
+    sort_at(rr, pid);
+
+    tct = rr[0].at;
     i = tct + 1;
     j = 0;
-    q[0] = p[0];
+    q[0] = rr[0];
     rear = 0;
+
     while (rear != -1)
     {
         temp = q[0];
         if (rear != 0)
-        {
             for (int m = 0; m < rear; m++)
-            {
                 q[m] = q[m + 1];
-            }
-        }
         rear--;
         if (temp.rt >= tq)
         {
-            tct = tct + tq;
-            temp.rt = temp.rt - tq;
+            tct += tq;
+            temp.rt -= tq;
         }
         else
         {
-            tct = tct + temp.rt;
+            tct += temp.rt;
             temp.rt = 0;
         }
         if (temp.rt == 0)
         {
-            f = 1;
+            flag = 1;
             temp.ct = tct;
         }
-        if (j < n)
+        if (j < pid)
         {
             for (; i <= tct; i++)
-            {
-                if (p[j + 1].at == i)
+                if (rr[j + 1].at == i)
                 {
                     j++;
                     rear++;
-                    q[rear] = p[j];
+                    q[rear] = rr[j];
                 }
-            }
         }
-        if (f == 0)
+        if (flag == 0)
         {
             rear++;
             q[rear] = temp;
         }
-        for (k = 0; k < n; k++)
-        {
-            if (temp.pid == p[k].pid)
-                p[k] = temp;
-        }
-        f = 0;
+        for (k = 0; k < pid; k++)
+            if (temp.pid == rr[k].pid)
+                rr[k] = temp;
+        flag = 0;
     }
-    for (i = 0; i < n; i++)
+
+    sort_pid(rr, pid);
+
+    for (i = 0; i < pid; i++)
     {
-        for (j = i + 1; j < n; j++)
-        {
-            if (p[i].pid > p[j].pid)
-            {
-                temp = p[i];
-                p[i] = p[j];
-                p[j] = temp;
-            }
-        }
+        rr[i].ta = rr[i].ct - rr[i].at;
+        rr[i].wt = rr[i].ta - rr[i].bt;
+        avta += rr[i].ta;
+        avwt += rr[i].wt;
     }
-    for (i = 0; i < n; i++)
-    {
-        p[i].tat = p[i].ct - p[i].at;
-        atat = atat + p[i].tat;
-        p[i].wt = p[i].tat - p[i].bt;
-        awt = awt + p[i].wt;
-    }
-    printf("PID\tArrival\tBurst\tCompletion\tTurnAround\tWaiting\n");
-    for (i = 0; i < n; i++)
-    {
-        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\n", i + 1, p[i].at, p[i].bt, p[i].ct, p[i].tat, p[i].wt);
-    }
-    atat = atat / n;
-    awt = awt / n;
-    printf("Average waiting time is %f\nAverage turnaround time is %f\n", awt, atat);
+
+    printf("Process table:\n");
+    printf("PID\tAT\tBT\tCT\tTA\tWT\n");
+    for (int i = 0; i < pid; i++)
+        printf("%d\t%d\t%d\t%d\t%d\t%d\n", rr[i].pid, rr[i].at, rr[i].bt, rr[i].ct, rr[i].ta, rr[i].wt);
+
+    printf("\nAverage WT: %d", avta);
+    printf("Average TA: %d", avwt);
+
+    return 0;
 }
