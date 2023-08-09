@@ -1,68 +1,64 @@
 #include <stdio.h>
-int main() {
-	int total_frames, total_pages, hit = 0;
-	int m, n, page, flag, k, minimum_time, temp;
-	int pages[20], frames[10], arr[20], time[20];
-	
-	printf("Enter the number of pages: ");
-	scanf("%d", &total_pages);
-	
-	printf("Enter the capacity of frames: ");
-	scanf("%d", &total_frames);
-	
-	for (m = 0;m < total_frames; m++)
-		frames[m] = -1;
-		
-	for (m = 0; m < 25; m++)
-		arr[m] = 0;
-	
-	printf("Enter the reference String (RS): ");
-	for (m = 0; m < total_pages; m++)
-		scanf("%d", &pages[m]);
-	
-	printf("\n");
-	
-	for (m = 0; m < total_pages; m++) {
-		arr[pages[m]]++;
-		time[pages[m]] = m;
+#define MAX 100
+int main()
+{
+	int page[MAX], frame[10], n, capacity;
+	int hit = 0, flag, k, mintime, temp, arr[MAX], time[MAX];
+	printf("Enter no. of pages: ");
+	scanf("%d", &n);
+	printf("Enter RS: ");
+	for (int i = 0; i < n; i++)
+		scanf("%d", &page[i]);
+	printf("Enter capacity of frames: ");
+	scanf("%d", &capacity);
+	for (int i = 0; i < capacity; i++)
+		frame[i] = -1;
+	for (int i = 0; i < MAX; i++)
+		arr[i] = 0;
+	for (int i = 0; i < n; i++)
+	{
+		arr[page[i]]++;
+		time[page[i]] = i;
 		flag = 0;
-		k = frames[0];
-		
-		for (n = 0; n < total_frames; n++) {
-			if (frames[n] == -1 || frames[n] == pages[m]) {
-				if (frames[n] != -1)
+		k = frame[0];
+		for (int j = 0; j < capacity; j++)
+		{
+			if (frame[j] == -1 || frame[j] == page[i])
+			{
+				if (frame[j] != -1)
 					hit++;
 				flag = 1;
-				frames[n] = pages[m];
+				frame[j] = page[i];
 				break;
 			}
-			if (arr[k] > arr[frames[n]])
-				k = frames[n];
+			if (arr[k] > arr[frame[j]])
+				k = frame[j];
 		}
-		if (!flag) {
-			minimum_time = 25;
-			for (n = 0; n < total_frames; n++) {
-				if (arr[frames[n]] == arr[k] && time[frames[n]] < minimum_time) {
-					temp=n;
-					minimum_time = time[frames[n]];
+		if (!flag)
+		{
+			mintime = MAX;
+			for (int j = 0; j < capacity; j++)
+				if (arr[frame[j]] == arr[k] && time[frame[j]] < mintime)
+				{
+					temp = j;
+					mintime = time[frame[j]];
 				}
-			}
-			arr[frames[temp]] = 0;
-			frames[temp] = pages[m];
+			arr[frame[temp]] = 0;
+			frame[temp] = page[i];
 		}
-		printf("RS: %d | ", pages[m]);
-		for (int j = 0; j < total_frames; j++) {
-			if (frames[j] == -1)
+		printf("RS: %d |", page[i]);
+		for (int j = 0; j < capacity; j++)
+		{
+			if (frame[j] == -1)
 				printf(" _");
 			else
-				printf(" %d", frames[j]);
+				printf(" %d", frame[j]);
 		}
 		printf("\n");
 	}
-	printf("Page fault: %d \n", total_pages - hit);
-	printf("Page hit: %d\n", hit);
-	printf("Page fault ratio: %d\n", (total_pages - hit)*100/total_pages);
-	printf("Page hit ratio: %d\n", hit*100/total_pages);
-	
+	printf("Pagefaults: %d\n", n - hit);
+	printf("Pagehit: %d\n", hit);
+	printf("Pagefault Ratio: %d\n", (n - hit) * 100 / n);
+	printf("Pagehit Ratio: %d\n", hit * 100 / n);
 	return 0;
 }
