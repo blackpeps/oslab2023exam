@@ -1,64 +1,54 @@
 #include <stdio.h>
-
-#define MAX_BLOCKS 10
-#define MAX_FILES 10
-
-typedef struct {
-    int id;
-    int size;
-    int allocated;
-} MemoryBlock;
-
-void worstFit(MemoryBlock blocks[], int numBlocks, int files[], int numFiles) {
+#define MAX 20
+int main()
+{
+    int bsize[MAX], fsize[MAX], nb, nf;
+    int temp, low = 0;
+    static int bflag[MAX], fflag[MAX];
     int i, j;
-    int worstIndex;
-    
-    for (i = 0; i < numFiles; i++) {
-        worstIndex = -1;
-        
-        for (j = 0; j < numBlocks; j++) {
-            if (!blocks[j].allocated && blocks[j].size >= files[i]) {
-                if (worstIndex == -1 || blocks[j].size > blocks[worstIndex].size) {
-                    worstIndex = j;
+    printf("\nEnter the number of blocks:");
+    scanf("%d", &nb);
+    printf("Enter the size of memory block: ");
+    for (i = 1; i <= nb; i++)
+        scanf("%d", &bsize[i]);
+    printf("\nEnter the number of files: ");
+    scanf("%d", &nf);
+    printf("\nEnter the size of the file: ");
+    for (i = 1; i <= nf; i++)
+        scanf("%d", &fsize[i]);
+    for (i = 1; i <= nf; i++)
+    {
+        for (j = 1; j <= nb; j++)
+        {
+            if (bflag[j] != 1)
+            {
+                temp = bsize[j] - fsize[i];
+                if (temp >= 0)
+                {
+                    if (low < temp)
+                    {
+                        fflag[i] = j;
+                        low = temp;
+                    }
                 }
             }
         }
-        
-        if (worstIndex != -1) {
-            blocks[worstIndex].allocated = 1;
-            printf("Process %d allocated to block %d\n", i, blocks[worstIndex].id);
-        } else {
-            printf("No block available to allocate process %d\n", i);
+        if (low > 0)
+        {
+            bflag[fflag[i]] = 1;
+            low = 0;
+        }
+        else
+        {
+            fflag[i] = 0;
         }
     }
-}
-
-int main() {
-    MemoryBlock blocks[MAX_BLOCKS];
-    int numBlocks, numFiles;
-    int files[MAX_FILES];
-    int i;
-
-    printf("Enter the number of memory blocks: ");
-    scanf("%d", &numBlocks);
-
-    for (i = 0; i < numBlocks; i++) {
-        blocks[i].id = i + 1;
-        printf("Enter the size of block %d: ", blocks[i].id);
-        scanf("%d", &blocks[i].size);
-        blocks[i].allocated = 0;
+    printf("\nFile no.\tFile size\tBlock no\tBlock size");
+    for (i = 1; i <= nf; i++)
+    {
+        if (fflag[i] == 0)
+            printf("\n\n%d\t\t%d\t\t-\t\tnot allocated", i, fsize[i]);
+        else
+            printf("\n\n%d\t\t%d\t\t%d\t\t%d", i, fsize[i], fflag[i], bsize[fflag[i]]);
     }
-
-    printf("Enter the total number of processes: ");
-    scanf("%d", &numFiles);
-
-    printf("Enter the size of each process:\n");
-    for (i = 0; i < numFiles; i++) {
-        printf("Process %d: ", i);
-        scanf("%d", &files[i]);
-    }
-
-    worstFit(blocks, numBlocks, files, numFiles);
-
-    return 0;
 }
