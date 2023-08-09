@@ -1,67 +1,99 @@
 #include <stdio.h>
-void main()
+#include <stdlib.h>
+#define MAX 20
+
+struct process
 {
-    int n, b[20], g[20], p[20], w[20], t[20], a[20];
-    float avgw = 0;
-    float avgt = 0;
-    printf("Enter the number of process: ");
-    scanf("%d", &n);
-    for (int i = 0; i < n; i++)
-    {
-        printf("Process ID: ");
-        scanf("%d", &p[i]);
-        printf("Burst time: ");
-        scanf("%d", &b[i]);
-        printf("Arrival Time: ");
-        scanf("%d", &a[i]);
-    }
-    int temp = 0;
+    int pid, at, bt, ct, ta, wt;
+};
+
+void swap(struct process *a, struct process *b)
+{
+    struct process temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sort_at(struct process arr[], int n)
+{
     for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - 1; j++)
+        for (int j = 0; j < n - i - 1; j++)
         {
-            if (a[j] > a[j + 1])
-            {
-                temp = a[j];
-                a[j] = a[j + 1];
-                a[j + 1] = temp;
-
-                temp = b[j];
-                b[j] = b[j + 1];
-                b[j + 1] = temp;
-
-                temp = p[j];
-                p[j] = p[j + 1];
-                p[j + 1] = temp;
-            }
+            if (arr[j].at > arr[j + 1].at)
+                swap(&arr[j], &arr[j + 1]);
         }
+}
+void sort_pid(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (arr[j].pid > arr[j + 1].pid)
+                swap(&arr[j], &arr[j + 1]);
+        }
+}
+int main()
+{
+    int pid;
+    float avwt = 0, avta = 0;
+
+    do
+    {
+        printf("Enter the number of process (upto %d): ", MAX);
+        scanf("%d", &pid);
+    } while (pid <= 0 || pid > MAX);
+
+    struct process fcfs[pid];
+
+    printf("Enter process details:\n");
+    for (int i = 0; i < pid; i++)
+    {
+        printf("\nProcessID: %d\n", i + 1);
+        fcfs[i].pid = i + 1;
+
+        printf("Arrival Time: ");
+        scanf("%d", &fcfs[i].at);
+
+        printf("Burst Time: ");
+        scanf("%d", &fcfs[i].bt);
     }
-    int i, j;
-    g[0] = 0;
-    for (i = 0; i < n; i++)
-        g[i + 1] = g[i] + b[i];
+
+    sort_at(fcfs, pid);
+
     int current_time = 0;
-    for (i = 0; i < n; i++)
+
+    fcfs[0].ct = 0;
+
+    for (int i = 0; i < pid; i++)
+        fcfs[i + 1].ct = fcfs[i].ct + fcfs[i].bt;
+
+    for (int i = 0; i < pid; i++)
     {
-        if (current_time < a[i])
-        {
-            current_time = a[i];
-        }
-        g[i] = current_time + b[i];
-        current_time = g[i];
+        if (current_time < fcfs[i].at)
+            current_time = fcfs[i].at;
 
-        t[i] = g[i] - a[i];
-        w[i] = t[i] - b[i];
+        fcfs[i].ct = current_time + fcfs[i].bt;
+        fcfs[i].ta = fcfs[i].ct - fcfs[i].at;
+        fcfs[i].wt = fcfs[i].ta - fcfs[i].bt;
 
-        avgw += w[i];
-        avgt += t[i];
+        avwt += fcfs[i].wt;
+        avta += fcfs[i].ta;
+
+        current_time = fcfs[i].ct;
     }
-    avgw = avgw / n;
-    avgt = avgt / n;
 
-    printf("PID\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-    for (i = 0; i < n; i++)
-        printf("%d\t%d\t%d\t%d\t\t%d\t%d\n", p[i], a[i], b[i], g[i], w[i], t[i]);
-    printf("\nAverage waiting time: %f", avgw);
-    printf("\nAverage Turnaround time: %f\n", avgt);
+    avta /= pid;
+    avwt /= pid;
+
+    sort_pid(fcfs, pid);
+
+    printf("Process table:\n");
+    printf("PID\tAT\tBT\tCT\tTA\tWT\n");
+    for (int i = 0; i < pid; i++)
+        printf("%d\t%d\t%d\t%d\t%d\t%d\n", fcfs[i].pid, fcfs[i].at, fcfs[i].bt, fcfs[i].ct, fcfs[i].ta, fcfs[i].wt);
+
+    printf("\nAverage WT: %d", avta);
+    printf("Average TA: %d", avwt);
+
+    return 0;
 }
