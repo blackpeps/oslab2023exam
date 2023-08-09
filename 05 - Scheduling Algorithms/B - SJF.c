@@ -1,90 +1,109 @@
 #include <stdio.h>
-void main()
+#include <stdlib.h>
+#define MAX 20
+
+struct process
 {
-    int i, j, n, b[20], g[20], p[20], w[20], t[20], a[20];
-    float avgw = 0;
-    float avgt = 0;
-    printf("Enter the number of process: ");
-    scanf("%d", &n);
-    for (i = 0; i < n; i++)
-    {
-        printf("Process ID: ");
-        scanf("%d", &p[i]);
-        printf("Burst time: ");
-        scanf("%d", &b[i]);
-        printf("Arrival Time: ");
-        scanf("%d", &a[i]);
-    }
-    int temp = 0;
-    for (i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - 1; j++)
-        {
-            if (a[j] > a[j + 1])
-            {
-                temp = a[j];
-                a[j] = a[j + 1];
-                a[j + 1] = temp;
+    int pid, at, bt, ct, ta, wt;
+};
 
-                temp = b[j];
-                b[j] = b[j + 1];
-                b[j + 1] = temp;
+void swap(struct process *a, struct process *b)
+{
+    struct process temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
-                temp = p[j];
-                p[j] = p[j + 1];
-                p[j + 1] = temp;
-            }
-        }
-    }
+void sort_at(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].at > arr[j + 1].at)
+                swap(&arr[j], &arr[j + 1]);
+}
+
+void sort_bt(struct process arr[], int n)
+{
     int k = 1, min = 0, btime = 0;
-    for (i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-        btime = btime + b[i];
-        min = b[k];
-        for (j = k; j < n; j++)
-        {
-            if (btime >= a[j] && b[j] < min)
-            {
-                temp = a[j];
-                a[j] = a[j - 1];
-                a[j - 1] = temp;
-
-                temp = b[j];
-                b[j] = b[j - 1];
-                b[j - 1] = temp;
-
-                temp = p[j];
-                p[j] = p[j - 1];
-                p[j - 1] = temp;
-            }
-        }
+        btime = btime + arr[i].bt;
+        min = arr[k].bt;
+        for (int j = k; j < n; j++)
+            if (btime >= arr[j].at && arr[j].bt < min)
+                swap(&arr[j], &arr[j - 1]);
         k++;
     }
-    g[0] = a[0];
-    for (i = 0; i < n; i++)
-        g[i + 1] = g[i] + b[i];
-    int current_time = 0;
-    for (i = 0; i < n; i++)
+}
+
+void sort_pid(struct process arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j].pid > arr[j + 1].pid)
+                swap(&arr[j], &arr[j + 1]);
+}
+
+int main()
+{
+    int pid, avta = 0, avwt = 0;
+
+    do
     {
-        if (current_time < a[i])
-        {
-            current_time = a[i];
-        }
-        g[i] = current_time + b[i];
-        current_time = g[i];
+        printf("Enter process upto %d: ", MAX);
+        scanf("%d", &pid);
+    } while (pid <= 0 || pid > MAX);
 
-        t[i] = g[i] - a[i];
-        w[i] = t[i] - b[i];
+    struct process sjf[pid];
 
-        avgw += w[i];
-        avgt += t[i];
+    printf("Enter process details: ");
+    for (int i = 0; i < pid; i++)
+    {
+        printf("\nProcess ID: %d", i + 1);
+        sjf[i].pid = i + 1;
+
+        printf("\nArrival Time: ");
+        scanf("%d", &sjf[i].at);
+
+        printf("Burst Time: ");
+        scanf("%d", &sjf[i].bt);
     }
-    avgw = avgw / n;
-    avgt = avgt / n;
 
-    printf("PID\tArrival\tBurst\tCompletion\tWaiting\tTurnaround\n");
-    for (i = 0; i < n; i++)
-        printf("%d\t%d\t%d\t%d\t\t%d\t%d\n", p[i], a[i], b[i], g[i], w[i], t[i]);
-    printf("\nAverage waiting time: %f", avgw);
-    printf("\nAverage Turnaround time: %f\n", avgt);
+    sort_at(sjf, pid);
+    sort_bt(sjf, pid);
+
+    int current_time = 0;
+    sjf[0].ct = 0;
+    for (int i = 0; i < pid; i++)
+        sjf[i + 1].ct = sjf[i].ct + sjf[i].bt;
+
+    for (int i = 0; i < pid; i++)
+    {
+        if (current_time < sjf[i].at)
+            current_time = sjf[i].at;
+
+        sjf[i].ct = current_time + sjf[i].bt;
+        sjf[i].ta = sjf[i].ct - sjf[i].at;
+        sjf[i].wt = sjf[i].ta - sjf[i].bt;
+
+        avta += sjf[i].ta;
+        avwt += sjf[i].wt;
+
+        current_time = sjf[i].ct;
+    }
+
+    avwt = avwt / pid;
+    avta = avta / pid;
+
+    sort_pid(sjf, pid);
+
+    printf("Process table:\n");
+    printf("PID\tAT\tBT\tCT\tTA\tWT\n");
+    for (int i = 0; i < pid; i++)
+        printf("%d\t%d\t%d\t%d\t%d\t%d\n", sjf[i].pid, sjf[i].at, sjf[i].bt, sjf[i].ct, sjf[i].ta, sjf[i].wt);
+
+    printf("\nAverage WT: %d", avta);
+    printf("Average TA: %d", avwt);
+
+    return 0;
 }
