@@ -1,37 +1,39 @@
 #include <stdio.h>
+#define MAX 10
 void main()
 {
-    int bsize[10], psize[10], bno, pno, flags[10], allocation[10], i, j;
-    for (i = 0; i < 10; i++)
+    int bsize[MAX], psize[MAX], bno, pno, flag[MAX], allocation[MAX];
+    for (int i = 0; i < MAX; i++)
     {
-        flags[i] = 0;
+        flag[i] = 0;
         allocation[i] = -1;
     }
-    printf("Enter no of blocks:");
+    printf("Enter no. of blocks: ");
     scanf("%d", &bno);
-    printf("\nEnter size of each blocks:");
-    for (i = 0; i < bno; i++)
+    printf("Enter size of each block:\t");
+    for (int i = 0; i < bno; i++)
         scanf("%d", &bsize[i]);
-    printf("\nEnter no of processess:");
+    printf("Enter no. of process: ");
     scanf("%d", &pno);
-    printf("\nEnter size of each process:");
-    for (i = 0; i < pno; i++)
+    printf("Enter size of each process:\t");
+    for (int i = 0; i < pno; i++)
         scanf("%d", &psize[i]);
-    for (i = 0; i < pno; i++)
-        for (j = 0; j < bno; j++)
-            if (flags[j] == 0 && bsize[j] >= psize[i])
+
+    for (int i = 0; i < pno; i++)
+        for (int j = 0; j < bno; j++)
+            if (flag[j] == 0 && bsize[j] >= psize[i])
             {
                 allocation[j] = i;
-                flags[j] = 1;
+                flag[j] = 1;
                 break;
             }
-    printf("\nBlock no\tSize\t\tProcess no\t\tsize");
-    for (i = 0; i < bno; i++)
+    printf("\nBlock No\tSize\tProcess No.\t\tSize\t\tRemaining");
+    for (int i = 0; i < bno; i++)
     {
         printf("\n%d\t\t%d\t\t", i + 1, bsize[i]);
-        if (flags[i] == 1)
-            printf("%d\t\t\t%d", allocation[i] + 1, psize[allocation[i]]);
+        if (flag[i] == 1)
+            printf("%d\t\t%d\t\t%d", allocation[i] + 1, psize[allocation[i]], bsize[i] - psize[allocation[i]]);
         else
-            printf("not allocated");
+            printf("Not Allocated");
     }
 }
