@@ -65,9 +65,6 @@ int main()
     fcfs[0].ct = 0;
 
     for (int i = 0; i < pid; i++)
-        fcfs[i + 1].ct = fcfs[i].ct + fcfs[i].bt;
-
-    for (int i = 0; i < pid; i++)
     {
         if (current_time < fcfs[i].at)
             current_time = fcfs[i].at;
