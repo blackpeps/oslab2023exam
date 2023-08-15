@@ -74,8 +74,6 @@ int main()
 
     int current_time = 0;
     sjf[0].ct = 0;
-    for (int i = 0; i < pid; i++)
-        sjf[i + 1].ct = sjf[i].ct + sjf[i].bt;
 
     for (int i = 0; i < pid; i++)
     {
