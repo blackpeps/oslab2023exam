@@ -24,21 +24,13 @@
 
 When clicking on "Download", GitHub may lead to a page saying "Error rendering embedded code, Invalid PDF", even though all files are within this [repository](/pdfs/).
 
-#### Solution for Windows, Linux or MacOS Users
+#### Solution
 
-If you are using Windows, Linux or MacOS, you can follow the screenshots.
+The solution to this problem is common to all OS, that is, to download the file from the hamburger menu as in the following screenshot.
 
 | ![Windows No error](/assets/img/windows_no_error.png) | ![Windows solution](/assets/img/windows_solution.png) |
 | ----------------------------------------------------- | ----------------------------------------------------- |
-| Windows (displaying properly)                         | Solution in Windows for improper display              |
-
-#### Solution for Android Users
-
-If you are using Android (using your phone), follow the steps:
-
-| ![Android No Error](assets/img/android_no_error.jpg) | ![Android Solution](assets/img/android_solution.jpg) |
-| ---------------------------------------------------- | ---------------------------------------------------- |
-| Android displays with no error                       | Downloading the file within Android                  |
+| Windows (displaying properly)                         | Solution in Windows (improper display)                |
 
 ---
 
