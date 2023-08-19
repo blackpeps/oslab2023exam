@@ -140,14 +140,14 @@ Keep [hello.c](/03%20-%20System%20Calls/A%20-%20hello.c) in the same folder prio
 
 | Program            | Code                                                                                                                                                                                            |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 01 - Shared Memory | [Code 1](/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory/A%20-%20shared1.c) [Code 2](/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory/A%20-%20shared2.c) |
+| 01 - Shared Memory | [Code 1](/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory/A%20-%20shared1.c), [Code 2](/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory/A%20-%20shared2.c) |
 | 02 - Pipe          | [Code](/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory/B%20-%20Pipe.c)                                                                                                      |
 
 > Note
 
 Both the files (Code 1 and Code 2) must be downloaded into the same folder.<br>
-Then Code 1 should be compiled and `./a.out` must be executed. (Nothing will happen at that moment).
-Then Code 2 should be compiled and `./a.out` must be executed with will display the output. <br>
+Then Code 1 should be compiled and `./a.out` must be executed. (Nothing will happen at that moment). <br>
+Then Code 2 should be compiled and `./a.out` must be executed which will display the output. <br>
 You can view the output in the following pdf file.
 
 | [Download](/pdfs/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory.pdf) | [Top](#goback) |
