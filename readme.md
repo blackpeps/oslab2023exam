@@ -171,4 +171,4 @@ Keep [hello.c](/03%20-%20System%20Calls/A%20-%20hello.c) in the same folder prio
 
 ---
 
-[embed](/pdfs/11%20-%20Disk%20Scheduling.pdf)[/embed]
+[embed]https://github.com/blackpeps/oslab2023exam/blob/main/pdfs/11%20-%20Disk%20Scheduling.pdf)https://github.com/blackpeps/oslab2023exam/blob/main/pdfs/11%20-%20Disk%20Scheduling.pdf[/embed]
