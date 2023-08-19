@@ -11,7 +11,7 @@
 | 03 - System Calls                                    | [Check Subsection](#prgm03)                                                                                | [Download](/pdfs/03%20-%20System%20Calls.pdf)                                                                 |
 | 04 - I/O System Calls                                | [Code](/04%20-%20IO%20System%20Call/04%20-%20I%20O%20System%20Call.c)                                      | [Download](/pdfs/04%20-%20IO%20System%20Call.pdf)                                                             |
 | 05 - Scheduling Algorithms                           | [Check Subsection](#prgm05)                                                                                | [Download](/pdfs/05%20-%20Scheduling%20Algorithms.pdf)                                                        |
-| 06 - Inter Process Communication using Shared Memory | [Check Subsection](#prgm05)                                                                                | [Download](/pdfs/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory.pdf)                      |
+| 06 - Inter Process Communication using Shared Memory | [Check Subsection](#prgm06)                                                                                | [Download](/pdfs/06%20-%20Inter%20Process%20Communication%20using%20Shared%20Memory.pdf)                      |
 | 07 - IPC using Message Passing (Producer Consumer)   | [Code](</07%20-%20Producer%20Consumer/07%20-%20IPC%20using%20Message%20Passing%20(Producer%20Conusmer).c>) | [Download](/pdfs/07%20-%20Producer%20Consumer.pdf)                                                            |
 | 08 - Banker's Algorithm                              | [Code](/08%20-%20Bankers%20Algorithm/08%20-%20Bankers%20Algorithm.c)                                       | [Download](/pdfs/08%20-%20Bankers%20Algorithm.pdf)                                                            |
 | 09 - Memory Allocation for Fixed Partition           | [Check Subsection](#prgm09)                                                                                | [Download](/pdfs/09%20-%20Memory%20Management.pdf)                                                            |
@@ -170,3 +170,5 @@ Keep [hello.c](/03%20-%20System%20Calls/A%20-%20hello.c) in the same folder prio
 | ------------------------------------------------------------ | ------------------------------------------------ | -------------- |
 
 ---
+
+[embed](/pdfs/11%20-%20Disk%20Scheduling.pdf)[/embed]
