@@ -55,9 +55,13 @@ If you are using Android (using your phone), follow the steps:
 | 05 - Calculator                | [Code](</02%20-%20Shell%20Programming/E%20-%20Calculator%20(Using%20Case).sh>)         |
 | 06 - Prime number upto a limit | [Code](/02%20-%20Shell%20Programming/F%20-%20Prime%20Number%20upto%20given%20Limit.sh) |
 
-> Notes
+**Notes**
 
-You can run shell programs in any number of ways.
+> You can run shell programs in any number of ways.
+
+```
+./file.sh
+```
 
 ```
 sh file.sh
@@ -68,8 +72,20 @@ bash files.sh
 ```
 
 ```
-./file.sh
+source ./file.sh
 ```
+
+```
+. ./file.sh
+```
+
+> If you are getting errors while running shell scripts, the reasons may be:
+
+- the file includes syntaxes used in C language.
+- No proper file privileges for executing, upon which you may have to run the following command assuming the terminal is opened where the `file.sh` exists:
+  ```
+  chmod +x ./file.sh
+  ```
 
 | [Download](/pdfs/02%20-%20Shell%20Programming.pdf) | [Top](#goback) |
 | -------------------------------------------------- | -------------- |
