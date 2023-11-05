@@ -89,8 +89,8 @@ int main()
     for (int i = 0; i < pid; i++)
         printf("%d\t%d\t%d\t%d\t%d\t%d\n", fcfs[i].pid, fcfs[i].at, fcfs[i].bt, fcfs[i].ct, fcfs[i].ta, fcfs[i].wt);
 
-    printf("Average TA: %f\n", avta / pid);
-    printf("Average WT: %f\n", avwt / pid);
+    printf("Average TA: %f\n", avta);
+    printf("Average WT: %f\n", avwt);
 
     return 0;
 }
