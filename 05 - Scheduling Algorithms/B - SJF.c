@@ -46,7 +46,8 @@ void sort_pid(struct process arr[], int n)
 
 int main()
 {
-    int pid, avta = 0, avwt = 0;
+    int pid;
+    float avta = 0, avwt = 0;
 
     do
     {
